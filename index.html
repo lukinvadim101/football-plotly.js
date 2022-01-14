@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <title>Football Plotly.Js</title>
+</head>
+<body>
+  <div id="plot"></div>
+  <!-- <div id="myDiv"></div>
+  <script src="script.js"></script> -->
+  <script>
+
+    const prepData = (rawData) => {
+    let frames = []
+
+    rawData.map(i => {
+      const frame = {
+        frameId: i[0],
+        PlayersId: Object.keys(i[1]).map(id => `Player ${Math.trunc(id)}`),
+        data: [
+          {x: Object.values(i[1]).map(x => x[0]),
+           y: Object.values(i[1]).map(y => y[1])}
+          ],
+        // x: Object.values(i[1]).map(x => x[0]),
+        // y: Object.values(i[1]).map(y => y[1]),
+      }
+      frames.push(frame)
+    })
+
+    return frames
+}
+
+    Plotly.d3.json("data.json", function(err, data) {
+      if(err) throw err;
+    // console.log(data);
+    
+    const frames = prepData(Object.entries(data));
+    console.log(frames[0]);
+
+    const sliderSteps = [];
+
+    for (i = 0; i < frames.length; i++) {
+    sliderSteps.push({
+      method: 'update',
+      label: frames[i].frameId,
+      args: [[frames[i].frameId], {
+        mode: 'immediate',
+        transition: {duration: 300},
+        frame: {duration: 300, redraw: false},
+      }]
+    });
+  }
+    console.log(sliderSteps[2000]);
+    var data = [{
+      mode: 'markers',
+      size: 10,
+      text: frames[0].PlayersId,
+      x: frames[0].data[0].x,
+      y: frames[0].data[0].y,
+    }];
+  
+    var layout = {
+      title: '🦶⚽',
+      showlegend: false,
+      hovermode: 'closest',
+      height: 640,
+      width: 1050,
+      // updatemenus: [{
+      // x: 0,
+      // y: 0,
+      // yanchor: 'top',
+      // xanchor: 'left',
+      // showactive: false,
+      // direction: 'left',
+      // type: 'buttons',
+      // pad: {t: 87, r: 10},
+      // buttons: [{
+      //   method: 'animate',
+      //   args: [null, {
+      //     mode: 'immediate',
+      //     fromcurrent: true,
+      //     transition: {duration: 300},
+      //     frame: {duration: 500, redraw: false}
+      //   }],
+      //   label: 'Play'
+      // }, {
+      //     method: 'animate',
+      //     args: [[null], {
+      //       mode: 'immediate',
+      //       transition: {duration: 0},
+      //       frame: {duration: 0, redraw: false}
+      //     }],
+      //     label: 'Pause'
+      //   }]
+      // }],
+      sliders: [{
+      pad: {l: 130, t: 55},
+      currentvalue: {
+        visible: true,
+        prefix: 'Time:',
+        xanchor: 'right',
+        font: {size: 20, color: '#666'}
+      },
+      steps: sliderSteps
+    }]
+    };
+
+    Plotly.newPlot('plot', data, layout,)
+    .then(function() {
+    Plotly.addFrames('plot', sliderSteps);
+  });;
+});
+ 
+  </script>
+
+</body>
+</html>
