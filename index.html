@@ -9,8 +9,8 @@
 </head>
 <body>
   <div id="plot"></div>
-  <!-- <div id="myDiv"></div>
-  <script src="script.js"></script> -->
+  <div id="myDiv"></div>
+  <script src="script.js"></script>
   <script>
 
     const prepData = (rawData) => {
@@ -33,7 +33,7 @@
     return frames
 }
 
-    Plotly.d3.json("data.json", function(err, data) {
+    Plotly.d3.json("data1.json", function(err, data) {
       if(err) throw err;
     // console.log(data);
     
@@ -44,7 +44,7 @@
 
     for (i = 0; i < frames.length; i++) {
     sliderSteps.push({
-      method: 'update',
+      method: 'animate',
       label: frames[i].frameId,
       args: [[frames[i].frameId], {
         mode: 'immediate',
@@ -68,34 +68,34 @@
       hovermode: 'closest',
       height: 640,
       width: 1050,
-      // updatemenus: [{
-      // x: 0,
-      // y: 0,
-      // yanchor: 'top',
-      // xanchor: 'left',
-      // showactive: false,
-      // direction: 'left',
-      // type: 'buttons',
-      // pad: {t: 87, r: 10},
-      // buttons: [{
-      //   method: 'animate',
-      //   args: [null, {
-      //     mode: 'immediate',
-      //     fromcurrent: true,
-      //     transition: {duration: 300},
-      //     frame: {duration: 500, redraw: false}
-      //   }],
-      //   label: 'Play'
-      // }, {
-      //     method: 'animate',
-      //     args: [[null], {
-      //       mode: 'immediate',
-      //       transition: {duration: 0},
-      //       frame: {duration: 0, redraw: false}
-      //     }],
-      //     label: 'Pause'
-      //   }]
-      // }],
+      updatemenus: [{
+      x: 0,
+      y: 0,
+      yanchor: 'top',
+      xanchor: 'left',
+      showactive: false,
+      direction: 'left',
+      type: 'buttons',
+      pad: {t: 87, r: 10},
+      buttons: [{
+        method: 'update',
+        args: [null, {
+          mode: 'immediate',
+          fromcurrent: true,
+          transition: {duration: 300},
+          frame: {duration: 500, redraw: false}
+        }],
+        label: 'Play'
+      }, {
+          method: 'animate',
+          args: [[null], {
+            mode: 'immediate',
+            transition: {duration: 0},
+            frame: {duration: 0, redraw: false}
+          }],
+          label: 'Pause'
+        }]
+      }],
       sliders: [{
       pad: {l: 130, t: 55},
       currentvalue: {
@@ -110,7 +110,7 @@
 
     Plotly.newPlot('plot', data, layout,)
     .then(function() {
-    Plotly.addFrames('plot', sliderSteps);
+    Plotly.addFrames('plot', frames);
   });;
 });
  
