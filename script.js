@@ -64,7 +64,7 @@ Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminde
       }
     });
   }
-
+  console.log('tr',traces);
   // Create a frame for each year. Frames are effectively just
   // traces, except they don't need to contain the *full* trace
   // definition (for example, appearance). The frames just need
@@ -77,7 +77,7 @@ Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminde
     });
   }
 
-  console.log(frames);
+  console.log('fr',frames);
   // Now create slider steps, one for each frame. The slider
   // executes a plotly.js API command (here, Plotly.animate).
   // In this example, we'll animate to one of the named frames
@@ -151,8 +151,10 @@ Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminde
         font: {size: 20, color: '#666'}
       },
       steps: sliderSteps
+ 
     }]
   };
+  console.log('ss',sliderSteps);
   console.log(lookup);
   // Create the plot:
   Plotly.newPlot('myDiv', {
