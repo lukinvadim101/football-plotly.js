@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,126 +8,176 @@
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <title>Football Plotly.Js</title>
 </head>
+
 <body>
   <div id="plot"></div>
 
   <script>
-
     const prepData = (rawData) => {
-    let traces = []
 
-    rawData.map(i => {
-      const trace = {
-        frameId: i[0],
-        PlayersId: Object.keys(i[1]).map(id => `Player ${Math.trunc(id)}`),
-        // data: [
-        //   {x: Object.values(i[1]).map(x => x[0]),
-        //    y: Object.values(i[1]).map(y => y[1])}
-        //   ],
-        x: Object.values(i[1]).map(x => x[0]),
-        y: Object.values(i[1]).map(y => y[1]),
-      }
-      traces.push(trace)
-    })
-
-    return traces
-}
-
-    Plotly.d3.json("data1.json", function(err, dataObj) {
-      if(err) throw err;
+      let clearData = {
+        traces: [],
+        frames: [],
+        steps: [],
+      };
       
-    const traces = prepData(Object.entries(dataObj));
-    
-    const data = [{
-      mode: 'markers',
-      size: 10,
-      text: traces[0].PlayersId,
-      x: traces[1].x,
-      y: traces[1].y,
-    }];
-  
-    const frames = []
+      rawData.map(i => {
+        clearData.traces.push({
+          frameId: i[0],
+          PlayersId: Object.keys(i[1]).map(id => `Player ${Math.trunc(id)}`),
+          data: [{
+            x: Object.values(i[1]).map(x => x[0]),
+            y: Object.values(i[1]).map(y => y[1]),
+          }]
+        });
 
-    traces.map(i => {
-      const frame = {
-        name: i.frameId,
-        data: [{
-          x: i.x,
-          y: i.y,
-        }]
-      }
-      frames.push(frame)
-    })
+        clearData.frames.push({
+          name: i[0],
+          data: [{
+            x: Object.values(i[1]).map(x => x[0]),
+            y: Object.values(i[1]).map(y => y[1]),
+          }]
+        });
 
-  const steps = [];
-
-  traces.map( i => {
-    const step = {
-       label: i.frameId,
-       method: 'animate',
-       args: [[i.frameId], {
-         mode: 'immediate',
-         frame: {redraw: false, duration: 100},
-         transition: {duration: 100}
-       }]
-     }
-     steps.push(step)
-  })
-
-    const layout = {
-      title: '🦶⚽',
-      showlegend: false,
-      hovermode: 'closest',
-      height: 640,
-      width: 1050,
-      updatemenus: [{
-      x: 0,
-      y: 0,
-      yanchor: 'top',
-      xanchor: 'left',
-      showactive: false,
-      direction: 'left',
-      type: 'buttons',
-      pad: {t: 87, r: 10},
-      buttons: [{
-        method: 'animate',
-        args: [null, {
-          mode: 'immediate',
-          fromcurrent: true,
-          transition: {duration: 200},
-          frame: {duration: 100, redraw: false}
-        }],
-        label: 'Play'
-      }, {
+        clearData.steps.push({
+          label: i[0],
           method: 'animate',
-          args: [[null], {
-            mode: 'immediate',
-            transition: {duration: 0},
-            frame: {duration: 0, redraw: false}
-          }],
-          label: 'Pause'
-        }]
-      }],
-      sliders: [{
-      pad: {l: 130, t: 55},
-      currentvalue: {
-        visible: true,
-        prefix: 'Time:',
-        xanchor: 'right',
-        font: {size: 20, color: '#666'}
-      },
-      steps: steps
-    }]
-    };
+          args: [
+            [i[0]], {
+              mode: 'immediate',
+              frame: {
+                redraw: false,
+                duration: 100
+              },
+              transition: {
+                duration: 100
+              }
+            }
+          ]
+        })
+      })
 
-    Plotly.newPlot('plot', 
-    { data, 
-      layout,
-      config: {}, 
-      frames})
-});
- 
+      return clearData
+    }
+     
+    Plotly.d3.json("3_homo.json", function (err, dataObj) {
+      if (err) throw err;
+
+      const clearData = prepData(Object.entries(dataObj));
+      // console.log('fr', clearData.frames[0]);
+      // console.log('tr', clearData.traces[0]);
+      // console.log('st', clearData.steps[0]);
+
+      const data = [{
+        mode: 'markers',
+        size: 10,
+        text: clearData.traces[0].PlayersId,
+        x: clearData.traces[0].data[0].x,
+        y: clearData.traces[0].data[0].y,
+      }];
+
+
+      const layout = {
+        title: '🦶⚽',
+        xaxis: {
+          range: [0, 105],
+          showgrid: false,
+          showline: false,
+          zeroline: false,
+          showticklabels: false
+        },
+        yaxis: {
+          range: [0, 68],
+          showgrid: false,
+          showline: false,
+          zeroline: false,
+          showticklabels: false
+        },
+        showlegend: false,
+        hovermode: 'closest',
+        images: [{
+          name: 'field',
+          source: "./field.png",
+          xref: "paper",
+          yref: "paper",
+          x: 0,
+          y: 1,
+          sizex: 1,
+          sizey: 1,
+          opacity: 0.2,
+          layer: "below",
+        }],
+        updatemenus: [{
+          x: 0,
+          y: 0,
+          yanchor: 'top',
+          xanchor: 'left',
+          showactive: false,
+          direction: 'left',
+          type: 'buttons',
+          pad: {
+            t: 50,
+            r: 10
+          },
+          buttons: [{
+            method: 'animate',
+            args: [null, {
+              mode: 'immediate',
+              fromcurrent: true,
+              transition: {
+                duration: 300
+              },
+              frame: {
+                duration: 500,
+                redraw: false
+              }
+            }],
+            label: 'Play'
+          }, {
+            method: 'animate',
+            args: [
+              [null], {
+                mode: 'immediate',
+                transition: {
+                  duration: 0
+                },
+                frame: {
+                  duration: 0,
+                  redraw: false
+                }
+              }
+            ],
+            label: 'Pause'
+          }]
+        }],
+        height: 810,
+        width: 1050,
+        sliders: [{
+          pad: {
+            l: 140,
+            t: 20
+          },
+          currentvalue: {
+            visible: true,
+            prefix: 'Timestamp:',
+            xanchor: 'right',
+            font: {
+              size: 18,
+              color: '#666'
+            }
+          },
+          steps: clearData.steps
+        }]
+      };
+
+      Plotly.newPlot('plot', {
+        data,
+        layout,
+        frames: clearData.frames
+      })
+    });
   </script>
 
 </body>
+
 </html>
