@@ -24,7 +24,7 @@
       rawData.map(i => {
         clearData.traces.push({
           frameId: i[0],
-          PlayersId: Object.keys(i[1]).map(id => `Player ${Math.trunc(id)}`),
+          PlayersId: Object.keys(i[1]).map(id => `${Math.trunc(id)}`),
           data: [{
             x: Object.values(i[1]).map(x => x[0]),
             y: Object.values(i[1]).map(y => y[1]),
@@ -69,9 +69,15 @@
       // console.log('st', clearData.steps[0]);
 
       const data = [{
-        mode: 'markers',
+        mode: 'markers+text',
+        textposition: 'top',
         size: 10,
         text: clearData.traces[0].PlayersId,
+        textfont: {
+          family: 'sans serif',
+          size: 12,
+          color: '#323232'
+        },
         x: clearData.traces[0].data[0].x,
         y: clearData.traces[0].data[0].y,
       }];
